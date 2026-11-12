@@ -3,10 +3,10 @@ const cors = require("cors");
 require("dotenv").config();
 
 const authRoutes = require("./routes/authRoutes");
+const readingRoutes = require("./routes/readingRoutes");
 
 const app = express();
 
-// Validate required environment variables
 if (
   !process.env.DATABASE_URL ||
   !process.env.JWT_SECRET ||
@@ -17,14 +17,13 @@ if (
   );
 }
 
-// Middleware
 app.use(cors({
   origin: "http://localhost:5173"
 }));
 
 app.use(express.json({ limit: "10kb" }));
 
-// Health check
+// API health check
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
@@ -32,10 +31,11 @@ app.get("/", (req, res) => {
   });
 });
 
-// Authentication routes
+// API routes
 app.use("/api/auth", authRoutes);
+app.use("/api/readings", readingRoutes);
 
-// Not found handler
+// Handle unknown routes
 app.use((req, res) => {
   res.status(404).json({
     success: false,
