@@ -8,11 +8,11 @@ import {
   Eye,
   EyeOff,
   ArrowRight,
-  ShieldCheck,
-  LogOut
+  ShieldCheck
 } from "lucide-react";
 
 import { authAPI } from "./services/api";
+import Dashboard from "./pages/Dashboard";
 import "./App.css";
 
 function App() {
@@ -29,7 +29,6 @@ function App() {
   const [checkingSession, setCheckingSession] = useState(true);
   const [error, setError] = useState("");
 
-  // Restore an existing login session
   useEffect(() => {
     const checkSession = async () => {
       const token =
@@ -78,7 +77,6 @@ function App() {
 
       const { token, user: authenticatedUser } = response.data;
 
-      // Store the token according to the Remember me selection
       localStorage.removeItem("sweety_token");
       sessionStorage.removeItem("sweety_token");
 
@@ -129,41 +127,8 @@ function App() {
     );
   }
 
-  // Temporary authenticated screen.
-  // We will replace this with the complete dashboard next.
   if (user) {
-    return (
-      <main className="welcome-page">
-        <div className="welcome-card">
-          <div className="brand-icon welcome-icon">
-            <Activity size={28} />
-          </div>
-
-          <span className="eyebrow">AUTHENTICATION SUCCESSFUL</span>
-
-          <h1>Welcome, {user.name}!</h1>
-
-          <p>
-            You are successfully signed in to Sweety.
-            Your health tracking dashboard is coming next.
-          </p>
-
-          <div className="welcome-user">
-            <UserRound size={20} />
-            <span>{user.email}</span>
-          </div>
-
-          <button
-            type="button"
-            className="submit-button"
-            onClick={handleLogout}
-          >
-            Sign out
-            <LogOut size={18} />
-          </button>
-        </div>
-      </main>
-    );
+    return <Dashboard user={user} onLogout={handleLogout} />;
   }
 
   return (
