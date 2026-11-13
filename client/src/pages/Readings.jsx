@@ -52,7 +52,7 @@ function Readings() {
     } catch (err) {
       setError(
         err.response?.data?.message ||
-          "Unable to load glucose readings."
+        "Unable to load glucose readings."
       );
     } finally {
       setLoading(false);
@@ -77,9 +77,8 @@ function Readings() {
     });
   };
 
-  const getSlotLabel = (slot) => {
-    return slots.find((item) => item.value === slot)?.label || slot;
-  };
+  const getSlotLabel = (slot) =>
+    slots.find((item) => item.value === slot)?.label || slot;
 
   const resetForm = () => {
     setFormData({
@@ -115,15 +114,29 @@ function Readings() {
   const handleChange = (event) => {
     const { name, value } = event.target;
 
+    if (name === "readingDate" && value > getToday()) {
+      setError("Date cannot be in the future.");
+
+      setFormData((previous) => ({
+        ...previous,
+        readingDate: getToday()
+      }));
+
+      return;
+    }
+
     setFormData((previous) => ({
       ...previous,
       [name]: value
     }));
+
+    if (error === "Date cannot be in the future.") {
+      setError("");
+    }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     setError("");
     setSuccess("");
 
@@ -161,7 +174,7 @@ function Readings() {
     } catch (err) {
       setError(
         err.response?.data?.message ||
-          "Unable to save glucose reading."
+        "Unable to save glucose reading."
       );
     } finally {
       setSubmitting(false);
@@ -180,14 +193,12 @@ function Readings() {
 
     try {
       await readingAPI.delete(id);
-
       setSuccess("Glucose reading deleted successfully.");
-
       await fetchReadings();
     } catch (err) {
       setError(
         err.response?.data?.message ||
-          "Unable to delete glucose reading."
+        "Unable to delete glucose reading."
       );
     }
   };
@@ -196,15 +207,9 @@ function Readings() {
     <section className="readings-page">
       <header className="readings-page-header">
         <div>
-          <span className="dashboard-eyebrow">
-            HEALTH RECORDS
-          </span>
-
+          <span className="dashboard-eyebrow">HEALTH RECORDS</span>
           <h1>Glucose Readings</h1>
-
-          <p>
-            Manage and monitor your blood glucose measurements.
-          </p>
+          <p>Manage and monitor your blood glucose measurements.</p>
         </div>
 
         <button
@@ -212,8 +217,7 @@ function Readings() {
           className="add-reading-button"
           onClick={openAddForm}
         >
-          <Plus size={19} />
-          Add Reading
+          <Plus size={19} /> Add Reading
         </button>
       </header>
 
@@ -233,9 +237,7 @@ function Readings() {
         <div className="reading-form-card">
           <div className="reading-form-heading">
             <div>
-              <h2>
-                {editingId ? "Edit Reading" : "Add New Reading"}
-              </h2>
+              <h2>{editingId ? "Edit Reading" : "Add New Reading"}</h2>
               <p>Enter your glucose measurement details.</p>
             </div>
 
@@ -253,14 +255,15 @@ function Readings() {
             <div className="reading-form-grid">
               <div className="reading-field">
                 <label htmlFor="readingDate">Reading date</label>
+
                 <div className="reading-input-wrapper">
                   <CalendarDays size={18} />
+
                   <input
                     id="readingDate"
                     name="readingDate"
                     type="date"
                     value={formData.readingDate}
-                    max={getToday()}
                     onChange={handleChange}
                     required
                   />
@@ -269,6 +272,7 @@ function Readings() {
 
               <div className="reading-field">
                 <label htmlFor="slot">Time slot</label>
+
                 <select
                   id="slot"
                   name="slot"
@@ -288,8 +292,10 @@ function Readings() {
                 <label htmlFor="glucoseValue">
                   Glucose value (mg/dl)
                 </label>
+
                 <div className="reading-input-wrapper">
                   <Droplets size={18} />
+
                   <input
                     id="glucoseValue"
                     name="glucoseValue"
@@ -348,8 +354,7 @@ function Readings() {
             onClick={fetchReadings}
             disabled={loading}
           >
-            <RefreshCw size={17} />
-            Refresh
+            <RefreshCw size={17} /> Refresh
           </button>
         </div>
 
