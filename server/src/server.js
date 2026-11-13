@@ -17,9 +17,11 @@ if (
   );
 }
 
-app.use(cors({
-  origin: "http://localhost:5173"
-}));
+app.use(
+  cors({
+    origin: "http://localhost:5173"
+  })
+);
 
 app.use(express.json({ limit: "10kb" }));
 
@@ -64,10 +66,13 @@ app.use((error, req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 5000;
+// Start the server only when this file is run directly
+if (require.main === module) {
+  const PORT = process.env.PORT || 5000;
 
-const server = app.listen(PORT, () => {
-  console.log(`Sweety server running on port ${PORT}`);
-});
+  app.listen(PORT, () => {
+    console.log(`Sweety server running on port ${PORT}`);
+  });
+}
 
 module.exports = app;
