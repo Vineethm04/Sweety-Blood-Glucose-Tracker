@@ -10,6 +10,7 @@ import {
 
 import Sidebar from "../components/Sidebar";
 import Readings from "./Readings";
+import Reports from "./Reports";
 import { readingAPI } from "../services/api";
 
 function Dashboard({ user, onLogout }) {
@@ -22,6 +23,7 @@ function Dashboard({ user, onLogout }) {
     try {
       setLoading(true);
       setError("");
+
       const response = await readingAPI.getAll();
       setReadings(response.data.readings || []);
     } catch (err) {
@@ -198,9 +200,11 @@ function Dashboard({ user, onLogout }) {
                         {formatDate(reading.readingDate)}
                       </span>
                     </td>
+
                     <td>
                       {slotLabels[reading.slot] || reading.slot}
                     </td>
+
                     <td>
                       <strong className="reading-value">
                         {reading.glucoseValue} mg/dl
@@ -234,13 +238,7 @@ function Dashboard({ user, onLogout }) {
 
         {activePage === "readings" && <Readings />}
 
-        {activePage === "reports" && (
-          <section className="readings-page">
-            <span className="dashboard-eyebrow">HEALTH INSIGHTS</span>
-            <h1>Reports & Analytics</h1>
-            <p>We're preparing your glucose reports.</p>
-          </section>
-        )}
+        {activePage === "reports" && <Reports />}
       </main>
     </div>
   );
